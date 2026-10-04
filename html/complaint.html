@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hostel Complaints Desk | Unity Hostel</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+  <div id="toastContainer"></div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand">
+        <div class="brand-mark">U</div>
+        <span class="brand-text">Unity Hostel</span>
+      </a>
+
+      <ul class="nav-menu" id="navMenu">
+        <li class="nav-item"><a href="index.html">Home</a></li>
+        <li class="nav-item"><a href="rooms.html">Rooms</a></li>
+        <li class="nav-item"><a href="complaint.html" class="active">Complaints</a></li>
+        <li class="nav-item"><a href="about.html">About</a></li>
+        <li class="nav-item"><a href="contact.html">Contact</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn-outline btn-sm" id="navLoginBtn">Sign In</a>
+        <a href="dashboard.html" class="btn btn-primary btn-sm" id="navDashBtn" style="display: none;">Resident Dashboard</a>
+      </div>
+
+      <button class="nav-toggle" id="navToggleBtn" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <main style="max-width: 1200px; margin: 40px auto; padding: 0 24px;">
+    
+    <div style="text-align: center; margin-bottom: 40px;">
+      <span class="section-eyebrow">Resident Support</span>
+      <h1 style="font-size: 2.8rem; margin: 8px 0 14px;">Hostel Maintenance &amp; Complaints Desk</h1>
+      <p style="color: var(--text-muted); max-width: 620px; margin: 0 auto; font-size: 1.05rem;">
+        Experiencing an electrical, plumbing, or internet issue? Submit a ticket directly to the hostel maintenance crew and track its progress in real-time.
+      </p>
+    </div>
+
+    <div class="dashboard-grid-2col">
+      
+      <!-- Complaint Submission Form -->
+      <div class="card" style="padding: 34px;">
+        <h3 style="font-size: 1.35rem; margin-bottom: 20px;">
+          <i class="fa-solid fa-file-pen" style="color: var(--primary-accent); margin-right: 8px;"></i>
+          Lodge Support Ticket
+        </h3>
+
+        <form id="standaloneComplaintForm" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="complaintCategory">Issue Category</label>
+            <select id="complaintCategory" class="form-select" required>
+              <option value="">Select Category</option>
+              <option value="Wi-Fi Issue">Wi-Fi / Internet Problem</option>
+              <option value="Electricity Problem">Electricity / Lights / Fan</option>
+              <option value="Water Problem">Water Supply / Geyser / Drainage</option>
+              <option value="Cleaning Issue">Room / Floor Cleaning</option>
+              <option value="Food Complaint">Mess Food Quality</option>
+              <option value="Room Maintenance">Furniture / Lock / Door Repair</option>
+              <option value="Security Issue">Security / Noise / Discipline</option>
+              <option value="Other">Other Query</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="complaintRoom">Room Number</label>
+            <input type="text" id="complaintRoom" class="form-input" placeholder="e.g. 101" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="complaintPriority">Priority</label>
+            <select id="complaintPriority" class="form-select">
+              <option value="Low">Low</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="High">High</option>
+              <option value="Urgent">Urgent</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="complaintDesc">Description</label>
+            <textarea id="complaintDesc" class="form-textarea" placeholder="Provide details of the issue..." required></textarea>
+          </div>
+
+          <button type="submit" id="submitComplaintBtn" class="btn btn-primary btn-block btn-lg">
+            <span class="btn-text">Submit Complaint</span>
+            <span class="spinner" style="display: none;"></span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Live Complaints Tracker -->
+      <div class="card" style="padding: 34px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h3 style="font-size: 1.35rem;">
+            <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-accent); margin-right: 8px;"></i>
+            Your Support Tickets
+          </h3>
+        </div>
+
+        <div class="filter-bar" id="statusFilterBar" style="margin-bottom: 16px;">
+          <button class="filter-pill active" data-filter="All">All</button>
+          <button class="filter-pill" data-filter="Pending">Pending</button>
+          <button class="filter-pill" data-filter="In Progress">In Progress</button>
+          <button class="filter-pill" data-filter="Resolved">Resolved</button>
+        </div>
+
+        <div id="complaintsListContainer" style="display: grid; gap: 14px; max-height: 520px; overflow-y: auto;">
+          <div class="empty-state-box">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <p>Loading complaints...</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-bottom" style="border: none; padding: 0;">
+      <div>&copy; 2026 Unity Hostel Management. All rights reserved.</div>
+      <div>Maintenance Desk Service SLA: Within 24 Hours.</div>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script>
+    (async function() {
+      let complaints = [];
+      let isAuth = false;
+
+      // Helper with auth
+      function authFetch(url, options = {}) {
+        const token = localStorage.getItem('unity_token');
+        const headers = options.headers || {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        return fetch(url, { ...options, headers, credentials: 'include' });
+      }
+
+      // Check Session
+      try {
+        const res = await authFetch('/api/auth/me');
+        if (res.ok) {
+          isAuth = true;
+          const data = await res.json();
+          document.getElementById('navLoginBtn').style.display = 'none';
+          document.getElementById('navDashBtn').style.display = 'inline-flex';
+          if (data.room) {
+            document.getElementById('complaintRoom').value = data.room.number;
+          }
+          loadComplaints();
+        } else {
+          document.getElementById('complaintsListContainer').innerHTML = `
+            <div class="empty-state-box">
+              <i class="fa-solid fa-lock"></i>
+              <h4>Sign in to view your tickets</h4>
+              <p>You can track all your active hostel maintenance requests after signing in.</p>
+              <a href="login.html" class="btn btn-primary btn-sm">Sign In Now</a>
+            </div>
+          `;
+        }
+      } catch (_) {}
+
+      async function loadComplaints(filter = 'All') {
+        const container = document.getElementById('complaintsListContainer');
+        try {
+          const url = filter && filter !== 'All' ? `/api/complaints?status=${encodeURIComponent(filter)}` : '/api/complaints';
+          const res = await authFetch(url);
+          const data = await res.json();
+          complaints = data.complaints || [];
+
+          if (complaints.length === 0) {
+            container.innerHTML = '<div class="empty-state-box"><p>No tickets found for this filter.</p></div>';
+            return;
+          }
+
+          container.innerHTML = complaints.map(c => {
+            const isPending = c.status !== 'Resolved';
+            const statusClass = c.status === 'Resolved' ? 'badge-success' : c.status === 'In Progress' ? 'badge-info' : 'badge-warning';
+            return `
+              <div class="card" style="padding: 16px; border-left: 3px solid ${c.status === 'Resolved' ? 'var(--success)' : 'var(--warning)'};">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <strong>#${c.id} - ${c.complaint_type}</strong>
+                  <span class="badge ${statusClass}">${c.status}</span>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;">
+                  Room: ${c.room_number} &bull; Priority: <strong>${c.priority}</strong>
+                </div>
+                <p style="font-size: 0.88rem; color: var(--text-body); margin-bottom: 10px;">${c.description}</p>
+                ${isPending ? `
+                  <button class="btn btn-outline btn-sm resolve-btn" data-id="${c.id}">
+                    <i class="fa-solid fa-check"></i> Mark as Solved
+                  </button>
+                ` : `<span style="color: var(--success); font-size: 0.8rem;"><i class="fa-solid fa-circle-check"></i> Resolved</span>`}
+              </div>
+            `;
+          }).join('');
+
+          document.querySelectorAll('.resolve-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+              btn.disabled = true;
+              await authFetch(`/api/complaints/${btn.getAttribute('data-id')}/resolve`, { method: 'PATCH' });
+              loadComplaints();
+            });
+          });
+
+        } catch (err) {
+          container.innerHTML = '<div class="empty-state-box"><p>Failed to load complaints.</p></div>';
+        }
+      }
+
+      document.querySelectorAll('#statusFilterBar .filter-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          document.querySelectorAll('#statusFilterBar .filter-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          if (isAuth) loadComplaints(pill.getAttribute('data-filter'));
+        });
+      });
+
+      const form = document.getElementById('standaloneComplaintForm');
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          if (!isAuth) {
+            alert('Please sign in to your resident account to submit a maintenance complaint.');
+            window.location.href = 'login.html';
+            return;
+          }
+
+          const complaintType = document.getElementById('complaintCategory').value;
+          const roomNumber = document.getElementById('complaintRoom').value.trim();
+          const priority = document.getElementById('complaintPriority').value;
+          const description = document.getElementById('complaintDesc').value.trim();
+          const btn = document.getElementById('submitComplaintBtn');
+
+          if (!complaintType || !description) {
+            alert('Please fill out all fields.');
+            return;
+          }
+
+          btn.disabled = true;
+          try {
+            const res = await authFetch('/api/complaints', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ complaintType, roomNumber, priority, description })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message);
+            alert(data.message || 'Complaint submitted successfully!');
+            form.reset();
+            loadComplaints();
+          } catch (err) {
+            alert(err.message);
+          } finally {
+            btn.disabled = false;
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

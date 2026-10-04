@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resident Dashboard | Unity Hostel</title>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer"></div>
+
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="dashboard-layout">
+    
+    <!-- ======================================================================
+         SIDEBAR NAVIGATION
+         ====================================================================== -->
+    <aside class="sidebar" id="dashboardSidebar">
+      <div class="sidebar-brand">
+        <a href="dashboard.html" class="brand">
+          <div class="brand-mark">U</div>
+          <span class="brand-text">Unity Hostel</span>
+        </a>
+      </div>
+
+      <nav class="sidebar-menu">
+        <div class="sidebar-link active" data-tab="overview">
+          <i class="fa-solid fa-gauge-high"></i>
+          <span>Overview</span>
+        </div>
+        <div class="sidebar-link" data-tab="rooms">
+          <i class="fa-solid fa-bed"></i>
+          <span>Rooms & Booking</span>
+        </div>
+        <div class="sidebar-link" data-tab="fees">
+          <i class="fa-solid fa-credit-card"></i>
+          <span>Fees & Payments</span>
+          <span class="sidebar-badge" id="sidebarFeeBadge">₹</span>
+        </div>
+        <div class="sidebar-link" data-tab="complaints">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span>Complaints Desk</span>
+          <span class="sidebar-badge" id="sidebarComplaintBadge">0</span>
+        </div>
+        <div class="sidebar-link" data-tab="attendance">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span>Attendance & Leave</span>
+        </div>
+        <div class="sidebar-link" data-tab="notices">
+          <i class="fa-solid fa-bullhorn"></i>
+          <span>Notice Board</span>
+        </div>
+        <div class="sidebar-link" data-tab="profile">
+          <i class="fa-solid fa-user-gear"></i>
+          <span>My Profile</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-profile">
+          <div class="sidebar-avatar" id="sidebarAvatar">P</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="sidebarUserName">Resident</div>
+            <div class="sidebar-user-role" id="sidebarRoomLabel">Room: Assigning...</div>
+          </div>
+        </div>
+        <button id="logoutBtn" class="logout-btn" type="button">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ======================================================================
+         MAIN CONTENT AREA
+         ====================================================================== -->
+    <main class="dashboard-main">
+      
+      <!-- TOPBAR -->
+      <header class="dashboard-topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div>
+            <h1 class="topbar-greeting" id="topbarGreeting">Good day, Resident</h1>
+            <p class="topbar-subtitle" id="topbarSubtitle">Welcome to your Unity Hostel Portal</p>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <button class="topbar-btn" id="notificationBtn" aria-label="Notifications" title="Notices & Updates">
+            <i class="fa-regular fa-bell"></i>
+            <span class="notification-dot" id="noticeDot"></span>
+          </button>
+          <a href="#profile" class="btn btn-secondary btn-sm" id="topbarProfileBtn">
+            <i class="fa-regular fa-user"></i>
+            <span id="topbarName">Profile</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- ======================================================================
+           TAB 1: OVERVIEW
+           ====================================================================== -->
+      <section class="tab-pane active" id="tab-overview">
+        
+        <!-- Welcome Hero Banner -->
+        <div class="welcome-banner">
+          <div class="welcome-text">
+            <span class="badge badge-primary" style="margin-bottom: 12px;">Resident Portal &bull; Live Status</span>
+            <h2 id="welcomeBannerHeading">Smart Hostel Living, Simplified.</h2>
+            <p>Monitor your room accommodation, pending fees, lodge maintenance issues, and apply for night out passes with one click.</p>
+          </div>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button class="btn btn-primary" id="bannerLodgeBtn">
+              <i class="fa-solid fa-plus"></i> Lodge Complaint
+            </button>
+            <button class="btn btn-secondary" id="bannerBookRoomBtn">
+              <i class="fa-solid fa-bed"></i> Book / Switch Room
+            </button>
+          </div>
+        </div>
+
+        <!-- 3D Metric Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card-3d">
+            <div class="stat-icon-wrap indigo">
+              <i class="fa-solid fa-door-open"></i>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">Assigned Room</div>
+              <div class="stat-value" id="statRoomNumber">—</div>
+              <div class="stat-caption" id="statRoomType">Checking status...</div>
+            </div>
+          </div>
+
+          <div class="stat-card-3d">
+            <div class="stat-icon-wrap green">
+              <i class="fa-solid fa-indian-rupee-sign"></i>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">Fee Status</div>
+              <div class="stat-value" id="statFeeStatus">—</div>
+              <div class="stat-caption" id="statFeeBalance">Pending: ₹0</div>
+            </div>
+          </div>
+
+          <div class="stat-card-3d">
+            <div class="stat-icon-wrap blue">
+              <i class="fa-solid fa-chart-pie"></i>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">Attendance</div>
+              <div class="stat-value" id="statAttendance">—%</div>
+              <div class="stat-caption" id="statAttendanceDays">Current term</div>
+            </div>
+          </div>
+
+          <div class="stat-card-3d">
+            <div class="stat-icon-wrap amber">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">Open Issues</div>
+              <div class="stat-value" id="statPendingComplaints">0</div>
+              <div class="stat-caption" id="statTotalComplaints">Support requests</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2-Column Content Grid -->
+        <div class="dashboard-grid-2col">
+          <!-- Latest Notices -->
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h3><i class="fa-solid fa-bullhorn" style="color: var(--primary-accent); margin-right: 8px;"></i> Latest Notices</h3>
+              <a href="javascript:void(0)" class="btn btn-outline btn-sm" id="viewAllNoticesBtn">View all</a>
+            </div>
+            <div id="overviewNoticesList">
+              <div class="empty-state-box">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Loading notices...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions & Status -->
+          <div class="dashboard-panel">
+            <div class="panel-header">
+              <h3><i class="fa-solid fa-bolt" style="color: var(--primary-accent); margin-right: 8px;"></i> Quick Actions</h3>
+            </div>
+            <div class="quick-action-grid">
+              <div class="quick-action-card" id="qaBookRoom">
+                <div class="quick-action-icon"><i class="fa-solid fa-bed"></i></div>
+                <div class="quick-action-text">
+                  <strong>Room Catalog</strong>
+                  <small>Explore & book rooms</small>
+                </div>
+              </div>
+              <div class="quick-action-card" id="qaPayFee">
+                <div class="quick-action-icon"><i class="fa-solid fa-credit-card"></i></div>
+                <div class="quick-action-text">
+                  <strong>Pay Hostel Fee</strong>
+                  <small>UPI / Card payment</small>
+                </div>
+              </div>
+              <div class="quick-action-card" id="qaComplaint">
+                <div class="quick-action-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+                <div class="quick-action-text">
+                  <strong>Report Issue</strong>
+                  <small>Wi-Fi, Water, Electric</small>
+                </div>
+              </div>
+              <div class="quick-action-card" id="qaLeave">
+                <div class="quick-action-icon"><i class="fa-solid fa-person-walking-luggage"></i></div>
+                <div class="quick-action-text">
+                  <strong>Night Out Pass</strong>
+                  <small>Apply for leave</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Complaints Section -->
+        <div class="dashboard-panel" style="margin-top: 10px;">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-list-check" style="color: var(--primary); margin-right: 8px;"></i> Your Recent Support Requests</h3>
+            <button class="btn btn-primary btn-sm" id="overviewNewComplaintBtn">
+              <i class="fa-solid fa-plus"></i> New Complaint
+            </button>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table" id="overviewComplaintsTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Category</th>
+                  <th>Room</th>
+                  <th>Priority</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="overviewComplaintsTbody">
+                <tr><td colspan="7" style="text-align:center; padding: 24px;">Loading requests...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ======================================================================
+           TAB 2: ROOMS & BOOKING
+           ====================================================================== -->
+      <section class="tab-pane" id="tab-rooms">
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <div>
+              <h3>Hostel Rooms & Bed Allotment</h3>
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Choose from our modern, secure hostel rooms. Select a room to view details and reserve your bed.</p>
+            </div>
+            <div id="currentRoomPill" class="badge badge-primary" style="padding: 8px 16px; font-size: 0.85rem;">
+              Current: Checking...
+            </div>
+          </div>
+
+          <!-- Room Filters -->
+          <div class="filter-bar" id="roomFilterBar">
+            <button class="filter-pill active" data-filter="All">All Rooms</button>
+            <button class="filter-pill" data-filter="Single">Single Sharing</button>
+            <button class="filter-pill" data-filter="Double">Double Sharing</button>
+            <button class="filter-pill" data-filter="Triple">Triple Sharing</button>
+            <button class="filter-pill" data-filter="AC">AC Rooms</button>
+            <button class="filter-pill" data-filter="Non-AC">Non-AC</button>
+            <button class="filter-pill" data-filter="Suite">Executive Suite</button>
+          </div>
+
+          <!-- Rooms Grid -->
+          <div class="rooms-grid" id="roomsCatalogGrid">
+            <div class="empty-state-box">
+              <i class="fa-solid fa-spinner fa-spin"></i>
+              <p>Loading rooms catalog...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           TAB 3: FEES & PAYMENTS
+           ====================================================================== -->
+      <section class="tab-pane" id="tab-fees">
+        <!-- Fee Metric Overview -->
+        <div class="stats-grid">
+          <div class="stat-card-3d">
+            <div class="stat-icon-wrap blue"><i class="fa-solid fa-receipt"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Fee</div>
+              <div class="stat-value" id="feeTotalDisplay">₹0</div>
+              <div class="stat-caption">Per semester charge</div>
+            </div>
+          </div>
+          <div class="stat-card-3d">
+            <div class="stat-icon-wrap green"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Paid Amount</div>
+              <div class="stat-value" id="feePaidDisplay">₹0</div>
+              <div class="stat-caption">Cleared to date</div>
+            </div>
+          </div>
+          <div class="stat-card-3d">
+            <div class="stat-icon-wrap amber"><i class="fa-solid fa-hourglass-half"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Pending Balance</div>
+              <div class="stat-value" id="feePendingDisplay">₹0</div>
+              <div class="stat-caption" id="feeDueCaption">Status: Pending</div>
+            </div>
+          </div>
+          <div class="stat-card-3d" style="display: flex; align-items: center; justify-content: center;">
+            <button class="btn btn-primary btn-lg btn-block" id="triggerPayFeeBtn">
+              <i class="fa-solid fa-credit-card"></i> Pay Now
+            </button>
+          </div>
+        </div>
+
+        <!-- Transactions History -->
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-accent); margin-right: 8px;"></i> Payment & Transaction History</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Transaction ID</th>
+                  <th>Date</th>
+                  <th>Payment Method</th>
+                  <th>Amount</th>
+                  <th>Notes</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="feeTransactionsTbody">
+                <tr><td colspan="6" style="text-align:center; padding: 24px;">Loading transactions...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           TAB 4: COMPLAINTS DESK
+           ====================================================================== -->
+      <section class="tab-pane" id="tab-complaints">
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <div>
+              <h3>Hostel Support & Maintenance Requests</h3>
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Track maintenance issues or file a new ticket directly with the hostel warden and technicians.</p>
+            </div>
+            <button class="btn btn-primary" id="triggerComplaintModalBtn">
+              <i class="fa-solid fa-plus"></i> Lodge New Complaint
+            </button>
+          </div>
+
+          <!-- Filter Pills -->
+          <div class="filter-bar" id="complaintFilterBar">
+            <button class="filter-pill active" data-filter="All">All Complaints</button>
+            <button class="filter-pill" data-filter="Pending">Pending</button>
+            <button class="filter-pill" data-filter="In Progress">In Progress</button>
+            <button class="filter-pill" data-filter="Resolved">Resolved</button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="custom-table" id="complaintsFullTable">
+              <thead>
+                <tr>
+                  <th>Ticket #</th>
+                  <th>Category</th>
+                  <th>Room</th>
+                  <th>Priority</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Submitted</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="complaintsFullTbody">
+                <tr><td colspan="8" style="text-align:center; padding: 24px;">Loading complaints...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           TAB 5: ATTENDANCE & LEAVE PASSES
+           ====================================================================== -->
+      <section class="tab-pane" id="tab-attendance">
+        <div class="stats-grid">
+          <div class="stat-card-3d">
+            <div class="stat-icon-wrap blue"><i class="fa-solid fa-calendar-days"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Total Days Tracked</div>
+              <div class="stat-value" id="attTotalDays">—</div>
+              <div class="stat-caption">Academic semester</div>
+            </div>
+          </div>
+          <div class="stat-card-3d">
+            <div class="stat-icon-wrap green"><i class="fa-solid fa-user-check"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Present Days</div>
+              <div class="stat-value" id="attPresentDays">—</div>
+              <div class="stat-caption">Hostel biometric log</div>
+            </div>
+          </div>
+          <div class="stat-card-3d">
+            <div class="stat-icon-wrap amber"><i class="fa-solid fa-user-xmark"></i></div>
+            <div class="stat-info">
+              <div class="stat-label">Absences / Leaves</div>
+              <div class="stat-value" id="attAbsentDays">—</div>
+              <div class="stat-caption">Approved & recorded</div>
+            </div>
+          </div>
+          <div class="stat-card-3d" style="display: flex; align-items: center; justify-content: center;">
+            <button class="btn btn-primary btn-lg btn-block" id="triggerLeaveModalBtn">
+              <i class="fa-solid fa-person-walking-luggage"></i> Apply Leave Pass
+            </button>
+          </div>
+        </div>
+
+        <!-- Leave Requests Table -->
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-file-signature" style="color: var(--primary-accent); margin-right: 8px;"></i> Night Out & Leave Pass Applications</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Request ID</th>
+                  <th>Leave Type</th>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Reason</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="leaveRequestsTbody">
+                <tr><td colspan="6" style="text-align:center; padding: 24px;">Loading leave passes...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Recent Biometric Log -->
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-fingerprint" style="color: var(--primary-accent); margin-right: 8px;"></i> Monthly Biometric Attendance Log</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Remarks</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceLogTbody">
+                <tr><td colspan="3" style="text-align:center; padding: 24px;">Loading attendance log...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           TAB 6: NOTICES
+           ====================================================================== -->
+      <section class="tab-pane" id="tab-notices">
+        <div class="dashboard-panel">
+          <div class="panel-header">
+            <div>
+              <h3>Hostel Notice Board</h3>
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Official announcements, mess menus, curfew guidelines, and campus updates.</p>
+            </div>
+          </div>
+          <div id="fullNoticesContainer" style="display: grid; gap: 16px;">
+            <div class="empty-state-box">
+              <i class="fa-solid fa-spinner fa-spin"></i>
+              <p>Loading notices...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           TAB 7: PROFILE SETTINGS
+           ====================================================================== -->
+      <section class="tab-pane" id="tab-profile">
+        <div class="dashboard-panel" style="max-width: 800px;">
+          <div class="panel-header">
+            <h3><i class="fa-solid fa-user-pen" style="color: var(--primary-accent); margin-right: 8px;"></i> Resident Profile & Academic Information</h3>
+          </div>
+          
+          <form id="profileForm" novalidate>
+            <div class="form-group">
+              <label class="form-label" for="profFullName">Full Name</label>
+              <input type="text" id="profFullName" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="profEmail">Email Address (Read-only)</label>
+              <input type="email" id="profEmail" class="form-input" disabled style="opacity: 0.7;">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div class="form-group">
+                <label class="form-label" for="profPhone">Mobile Number</label>
+                <input type="tel" id="profPhone" class="form-input" placeholder="+91 9876543210">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="profEmergencyContact">Emergency Contact</label>
+                <input type="tel" id="profEmergencyContact" class="form-input" placeholder="Parent / Guardian Contact">
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
+              <div class="form-group">
+                <label class="form-label" for="profCollege">College / Institute</label>
+                <input type="text" id="profCollege" class="form-input" placeholder="e.g. Faculty of Technology">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="profSemester">Semester</label>
+                <input type="number" id="profSemester" min="1" max="10" class="form-input" placeholder="4">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="profCourse">Course / Branch</label>
+              <input type="text" id="profCourse" class="form-input" placeholder="e.g. B.Tech Computer Engineering">
+            </div>
+
+            <button type="submit" id="saveProfileBtn" class="btn btn-primary btn-lg" style="margin-top: 10px;">
+              <span class="btn-text">Save Profile Changes</span>
+              <span class="spinner" style="display: none;"></span>
+            </button>
+          </form>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: ROOM BOOKING
+       ====================================================================== -->
+  <div class="modal-backdrop" id="roomBookingModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalRoomTitle">Reserve Bed in Room 101</h3>
+        <button class="modal-close" data-close-modal="roomBookingModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="bookingModalBody">
+        <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 20px;">
+          Confirm your bed allocation. If you already have a room, your previous bed will be released and transferred to this new room.
+        </p>
+        <div class="glass-panel" style="padding: 16px; margin-bottom: 24px; font-size: 0.88rem;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="color: var(--text-muted);">Room Type:</span>
+            <strong id="modalRoomTypeDisplay">—</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="color: var(--text-muted);">Floor:</span>
+            <strong id="modalRoomFloorDisplay">—</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="color: var(--text-muted);">Monthly Rent:</span>
+            <strong id="modalRoomFeeDisplay" style="color: var(--primary-light);">₹—</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted);">Available Beds:</span>
+            <strong id="modalRoomBedsDisplay" style="color: var(--success);">— beds left</strong>
+          </div>
+        </div>
+
+        <button type="button" id="confirmBookingBtn" class="btn btn-primary btn-block btn-lg">
+          <span class="btn-text">Confirm Allocation</span>
+          <span class="spinner" style="display: none;"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: FEE PAYMENT (DEMO PROCESSING WITH REAL DB RECORDS)
+       ====================================================================== -->
+  <div class="modal-backdrop" id="feePaymentModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Hostel Fee Payment</h3>
+        <button class="modal-close" data-close-modal="feePaymentModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="feePaymentForm" novalidate>
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 20px;">
+          Instant online fee clearance. Records real transaction history and ledger settlement.
+        </p>
+        <div class="form-group">
+          <label class="form-label" for="payAmountInput">Payment Amount (₹)</label>
+          <input type="number" id="payAmountInput" min="1" class="form-input" required>
+          <small style="color: var(--text-dim); margin-top: 4px; display: block;" id="maxPayableNotice">Maximum payable: ₹4500</small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="payMethodSelect">Payment Method</label>
+          <select id="payMethodSelect" class="form-select">
+            <option value="UPI / QR Code">UPI (Google Pay, PhonePe, Paytm)</option>
+            <option value="Debit Card / RuPay">Debit Card (Visa, MasterCard, RuPay)</option>
+            <option value="Net Banking">Net Banking (SBI, HDFC, ICICI, Axis)</option>
+            <option value="Hostel Accounts Counter">Hostel Accounts Counter Deposit</option>
+          </select>
+        </div>
+
+        <div style="padding: 14px; margin-bottom: 20px; font-size: 0.85rem; color: var(--text-body); background: var(--bg-subtle); border-radius: var(--radius-md); border-left: 3px solid var(--primary-accent);">
+          <i class="fa-solid fa-shield-halved" style="color: var(--primary-accent); margin-right: 6px;"></i> 256-bit Encrypted Demo Gateway Simulation. Real database ledger will be updated immediately.
+        </div>
+
+        <button type="submit" id="submitPaymentBtn" class="btn btn-primary btn-block btn-lg">
+          <span class="btn-text">Proceed with Payment</span>
+          <span class="spinner" style="display: none;"></span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: LODGE COMPLAINT
+       ====================================================================== -->
+  <div class="modal-backdrop" id="complaintModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Lodge Hostel Complaint</h3>
+        <button class="modal-close" data-close-modal="complaintModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="newComplaintForm" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="compCategorySelect">Issue Category</label>
+          <select id="compCategorySelect" class="form-select" required>
+            <option value="">Select Category</option>
+            <option value="Wi-Fi Issue">Wi-Fi / Internet Connectivity</option>
+            <option value="Electricity Problem">Electricity / Lighting / Fan</option>
+            <option value="Water Problem">Water Supply / Geyser / Plumbing</option>
+            <option value="Cleaning Issue">Room / Washroom Cleaning</option>
+            <option value="Food Complaint">Mess Food Quality / Hygiene</option>
+            <option value="Room Maintenance">Furniture / Door Lock / Window</option>
+            <option value="Security Issue">Security / Noise / Discipline</option>
+            <option value="Other">Other Query / Request</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="compRoomInput">Room Number</label>
+          <input type="text" id="compRoomInput" class="form-input" placeholder="e.g. 101" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="compPrioritySelect">Priority Level</label>
+          <select id="compPrioritySelect" class="form-select">
+            <option value="Low">Low (Can wait 2-3 days)</option>
+            <option value="Medium" selected>Medium (Standard 24-48 hours)</option>
+            <option value="High">High (Needs attention today)</option>
+            <option value="Urgent">Urgent (Emergency / Immediate)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="compDescriptionInput">Detailed Description</label>
+          <textarea id="compDescriptionInput" class="form-textarea" placeholder="Describe the problem clearly..." required></textarea>
+        </div>
+
+        <button type="submit" id="submitComplaintBtn" class="btn btn-primary btn-block btn-lg">
+          <span class="btn-text">Submit Support Ticket</span>
+          <span class="spinner" style="display: none;"></span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: APPLY LEAVE PASS
+       ====================================================================== -->
+  <div class="modal-backdrop" id="leaveModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Apply for Night Out / Leave Pass</h3>
+        <button class="modal-close" data-close-modal="leaveModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="leavePassForm" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="leaveTypeSelect">Leave Type</label>
+          <select id="leaveTypeSelect" class="form-select" required>
+            <option value="Night Out">Night Out Pass (Return next morning)</option>
+            <option value="Home Visit">Home Visit (Weekend / Vacation)</option>
+            <option value="Academic Event">Academic Event / Conference / Hackathon</option>
+            <option value="Emergency">Emergency Leave</option>
+          </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="form-group">
+            <label class="form-label" for="leaveStartDate">Start Date</label>
+            <input type="date" id="leaveStartDate" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="leaveEndDate">End Date</label>
+            <input type="date" id="leaveEndDate" class="form-input" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="leaveReason">Reason for Leave</label>
+          <textarea id="leaveReason" class="form-textarea" placeholder="Mention destination and reason..." required></textarea>
+        </div>
+
+        <button type="submit" id="submitLeaveBtn" class="btn btn-primary btn-block btn-lg">
+          <span class="btn-text">Submit for Warden Approval</span>
+          <span class="spinner" style="display: none;"></span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard Controller Script -->
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact &amp; Warden Helpdesk | Unity Hostel</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="toastContainer"></div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand">
+        <div class="brand-mark">U</div>
+        <span class="brand-text">Unity Hostel</span>
+      </a>
+
+      <ul class="nav-menu" id="navMenu">
+        <li class="nav-item"><a href="index.html">Home</a></li>
+        <li class="nav-item"><a href="rooms.html">Rooms</a></li>
+        <li class="nav-item"><a href="complaint.html">Complaints</a></li>
+        <li class="nav-item"><a href="about.html">About</a></li>
+        <li class="nav-item"><a href="contact.html" class="active">Contact</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+      </div>
+
+      <button class="nav-toggle" id="navToggleBtn" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <main style="max-width: 1250px; margin: 40px auto; padding: 0 24px;">
+    
+    <div style="text-align: center; margin-bottom: 45px;">
+      <span class="section-eyebrow">Warden Helpdesk &amp; Support</span>
+      <h1 style="font-size: 2.8rem; margin: 8px 0 14px;">Contact Unity Hostel Administration</h1>
+      <p style="color: var(--text-muted); max-width: 650px; margin: 0 auto; font-size: 1.05rem;">
+        Whether you have questions regarding admission, tariffs, rules, or require emergency support, our management team is here to assist you.
+      </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; margin-bottom: 50px;">
+      
+      <!-- Contact Form -->
+      <div class="card" style="padding: 38px;">
+        <h3 style="font-size: 1.4rem; margin-bottom: 20px;">
+          <i class="fa-solid fa-paper-plane" style="color: var(--primary-accent); margin-right: 8px;"></i>
+          Send an Official Inquiry
+        </h3>
+
+        <form id="contactPageForm" novalidate>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label class="form-label" for="cntName">Full Name</label>
+              <input type="text" id="cntName" class="form-input" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cntEmail">Email Address</label>
+              <input type="email" id="cntEmail" class="form-input" placeholder="you@example.com" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label class="form-label" for="cntPhone">Mobile Number</label>
+              <input type="tel" id="cntPhone" class="form-input" placeholder="+91 9876543210">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cntSubject">Subject</label>
+              <input type="text" id="cntSubject" class="form-input" placeholder="Inquiry topic" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="cntMessage">Message Details</label>
+            <textarea id="cntMessage" class="form-textarea" placeholder="Write your inquiry or message here..." required></textarea>
+          </div>
+
+          <button type="submit" id="cntSubmitBtn" class="btn btn-primary btn-block btn-lg">
+            <span class="btn-text">Submit Message</span>
+            <span class="spinner" style="display: none;"></span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Contact Info Cards -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        
+        <div class="card" style="padding: 30px; border-left: 4px solid var(--primary-accent);">
+          <h4 style="font-size: 1.2rem; margin-bottom: 14px; color: var(--text-main);">
+            <i class="fa-solid fa-user-tie" style="color: var(--primary-accent); margin-right: 8px;"></i>
+            Chief Warden Office
+          </h4>
+          <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.8;">
+            <strong>Chief Warden:</strong> Dr. Tina Patel<br>
+            <strong>Direct Phone:</strong> +91 9876543210<br>
+            <strong>Office Email:</strong> warden@unityhostel.com<br>
+            <strong>Campus Address:</strong> Unity Hostel Block A, College Road, Vadodara, Gujarat<br>
+            <strong>Office Timings:</strong> Monday – Saturday: 9:00 AM – 6:00 PM
+          </p>
+        </div>
+
+        <div class="card" style="padding: 30px; border-left: 4px solid var(--danger);">
+          <h4 style="font-size: 1.2rem; margin-bottom: 14px; color: var(--text-main);">
+            <i class="fa-solid fa-phone-volume" style="color: var(--danger); margin-right: 8px;"></i>
+            24x7 Emergency Helplines
+          </h4>
+          <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.8;">
+            <strong>Main Security Gate:</strong> +91 9876543211<br>
+            <strong>Medical Emergency Desk:</strong> +91 9876543212<br>
+            <strong>Campus Electrician / IT:</strong> +91 9876543213<br>
+            <strong>Curfew Timing:</strong> Gate closes strictly at 10:00 PM daily.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Campus Map -->
+    <div class="card" style="padding: 30px; margin-bottom: 50px;">
+      <h3 style="font-size: 1.3rem; margin-bottom: 16px;">
+        <i class="fa-solid fa-map-location-dot" style="color: var(--primary-accent); margin-right: 8px;"></i>
+        Campus Location &amp; Map
+      </h3>
+      <div style="border-radius: var(--radius-md); overflow: hidden; height: 320px; background: rgba(0,0,0,0.3);">
+        <iframe 
+          title="Hostel Map"
+          src="https://maps.google.com/maps?q=Vadodara+Gujarat&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+          width="100%" 
+          height="100%" 
+          style="border:0;" 
+          loading="lazy">
+        </iframe>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-bottom" style="border: none; padding: 0;">
+      <div>&copy; 2026 Unity Hostel Management. All rights reserved.</div>
+      <div>Helpline Active 24 Hours.</div>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script>
+    const form = document.getElementById('contactPageForm');
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('cntName').value.trim();
+        const email = document.getElementById('cntEmail').value.trim();
+        const phone = document.getElementById('cntPhone').value.trim();
+        const subject = document.getElementById('cntSubject').value.trim();
+        const message = document.getElementById('cntMessage').value.trim();
+        const btn = document.getElementById('cntSubmitBtn');
+
+        if (!name || !email || !subject || !message) {
+          alert('Please complete all required fields.');
+          return;
+        }
+
+        btn.disabled = true;
+        try {
+          const res = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, phone, subject, message })
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.message);
+          alert(data.message || 'Message received! Our team will contact you.');
+          form.reset();
+        } catch (err) {
+          alert(err.message);
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    }
+  </script>
+</body>
+</html>

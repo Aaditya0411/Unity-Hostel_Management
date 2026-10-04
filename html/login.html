@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In | Unity Hostel Management</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+  <!-- Floating Toast Notifications -->
+  <div id="toastContainer"></div>
+
+  <main class="auth-wrapper">
+    <a href="index.html" class="brand auth-brand">
+      <div class="brand-mark">U</div>
+      <span class="brand-text">Unity Hostel</span>
+    </a>
+
+    <div class="auth-card-3d">
+      <div class="auth-header">
+        <span class="eyebrow">Resident Portal</span>
+        <h1>Welcome Back</h1>
+        <p>Sign in to manage your room, fees, and hostel life.</p>
+      </div>
+
+      <div id="alertBox" class="alert-box error" style="display: none;">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span id="alertMessage">Invalid email or password</span>
+      </div>
+
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="loginEmail">Email Address</label>
+          <input 
+            type="email" 
+            id="loginEmail" 
+            name="email" 
+            class="form-input" 
+            placeholder="resident@example.com" 
+            autocomplete="email" 
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="loginPassword">Password</label>
+          <div class="password-wrap">
+            <input 
+              type="password" 
+              id="loginPassword" 
+              name="password" 
+              class="form-input" 
+              placeholder="Enter your password" 
+              autocomplete="current-password" 
+              required
+            >
+            <button type="button" class="password-toggle" data-target="loginPassword" aria-label="Toggle password visibility">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="auth-extra-links">
+          <label class="remember-me">
+            <input type="checkbox" id="rememberMe">
+            <span>Remember me</span>
+          </label>
+          <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
+        </div>
+
+        <button type="submit" id="loginBtn" class="btn btn-primary btn-block btn-lg">
+          <span class="btn-text">Sign In</span>
+          <span class="spinner" style="display: none;"></span>
+        </button>
+
+        <div class="demo-login-box" style="margin-top: 18px; padding: 12px 14px; background: var(--bg-subtle); border: 1px dashed var(--border-medium); border-radius: var(--radius-md); text-align: center; font-size: 0.84rem;">
+          <div style="color: var(--text-muted); margin-bottom: 6px;">
+            Quick Test Resident: <strong style="color: var(--text-main);">priya@hostel.com</strong>
+          </div>
+          <button type="button" id="fillDemoBtn" class="btn btn-sm btn-outline" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <i class="fa-solid fa-bolt"></i> One-Click Fill Demo Credentials
+          </button>
+        </div>
+      </form>
+
+      <div class="auth-footer">
+        New resident? <a href="register.html">Create an account</a>
+      </div>
+    </div>
+
+    <a href="index.html" class="back-to-home">
+      <i class="fa-solid fa-arrow-left"></i> Back to Homepage
+    </a>
+  </main>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>

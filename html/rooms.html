@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hostel Rooms & Bed Allotment | Unity Hostel</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+  <div id="toastContainer"></div>
+
+  <!-- Header / Navigation -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand">
+        <div class="brand-mark">U</div>
+        <span class="brand-text">Unity Hostel</span>
+      </a>
+
+      <ul class="nav-menu" id="navMenu">
+        <li class="nav-item"><a href="index.html">Home</a></li>
+        <li class="nav-item"><a href="rooms.html" class="active">Rooms</a></li>
+        <li class="nav-item"><a href="complaint.html">Complaints</a></li>
+        <li class="nav-item"><a href="about.html">About</a></li>
+        <li class="nav-item"><a href="contact.html">Contact</a></li>
+      </ul>
+
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn-outline btn-sm" id="navLoginBtn">Sign In</a>
+        <a href="dashboard.html" class="btn btn-primary btn-sm" id="navDashBtn" style="display: none;">Resident Dashboard</a>
+      </div>
+
+      <button class="nav-toggle" id="navToggleBtn" aria-label="Toggle navigation">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main style="max-width: 1300px; margin: 40px auto; padding: 0 24px;">
+    
+    <div style="text-align: center; margin-bottom: 40px;">
+      <span class="section-eyebrow">Hostel Accommodation</span>
+      <h1 style="font-size: 2.8rem; margin: 8px 0 14px;">Available Rooms &amp; Bed Allotment</h1>
+      <p style="color: var(--text-muted); max-width: 650px; margin: 0 auto; font-size: 1.05rem;">
+        Choose your desired room configuration. Live inventory indicates currently available beds. Logged in residents can book directly.
+      </p>
+    </div>
+
+    <!-- Filter Pills -->
+    <div class="filter-bar" id="roomFilterBar" style="justify-content: center;">
+      <button class="filter-pill active" data-filter="All">All Rooms</button>
+      <button class="filter-pill" data-filter="Single">Single Sharing</button>
+      <button class="filter-pill" data-filter="Double">Double Sharing</button>
+      <button class="filter-pill" data-filter="Triple">Triple Sharing</button>
+      <button class="filter-pill" data-filter="AC">AC Deluxe</button>
+      <button class="filter-pill" data-filter="Non-AC">Non-AC</button>
+      <button class="filter-pill" data-filter="Executive">Executive Suite</button>
+    </div>
+
+    <!-- Rooms Catalog Grid -->
+    <div class="rooms-grid" id="publicRoomsGrid" style="margin-top: 30px;">
+      <div class="empty-state-box">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <p>Loading real-time room availability...</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Room Booking Modal -->
+  <div class="modal-backdrop" id="roomBookingModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalRoomTitle">Reserve Bed</h3>
+        <button class="modal-close" data-close-modal="roomBookingModal"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div>
+        <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 20px;">
+          Confirm your room allocation. Your bed will be reserved immediately in our database.
+        </p>
+        <div style="padding: 16px; margin-bottom: 24px; font-size: 0.88rem; background: var(--bg-subtle); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="color: var(--text-muted);">Room Type:</span>
+            <strong id="modalRoomTypeDisplay">—</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="color: var(--text-muted);">Floor:</span>
+            <strong id="modalRoomFloorDisplay">—</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="color: var(--text-muted);">Monthly Rent:</span>
+            <strong id="modalRoomFeeDisplay" style="color: var(--primary-accent);">₹—</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted);">Available Beds:</span>
+            <strong id="modalRoomBedsDisplay" style="color: var(--success);">— beds</strong>
+          </div>
+        </div>
+
+        <button type="button" id="confirmBookingBtn" class="btn btn-primary btn-block btn-lg">
+          <span class="btn-text">Confirm Booking</span>
+          <span class="spinner" style="display: none;"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-bottom" style="border: none; padding: 0;">
+      <div>&copy; 2026 Unity Hostel Management. All rights reserved.</div>
+      <div>Real-Time Bed Allocation &amp; Inventory.</div>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+  <script>
+    (async function() {
+      let allRooms = [];
+      let activeRoom = null;
+      let user = null;
+
+      // Check user session
+      try {
+        const token = localStorage.getItem('unity_token');
+        const headers = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        const authRes = await fetch('/api/auth/me', { headers, credentials: 'include' });
+        if (authRes.ok) {
+          const authData = await authRes.json();
+          user = authData.user;
+          document.getElementById('navLoginBtn').style.display = 'none';
+          document.getElementById('navDashBtn').style.display = 'inline-flex';
+        }
+      } catch (_) {}
+
+      async function fetchRooms(filter = 'All') {
+        const grid = document.getElementById('publicRoomsGrid');
+        try {
+          const url = filter && filter !== 'All' ? `/api/rooms?type=${encodeURIComponent(filter)}` : '/api/rooms';
+          const res = await fetch(url);
+          const data = await res.json();
+          allRooms = data.rooms;
+
+          if (!allRooms || allRooms.length === 0) {
+            grid.innerHTML = '<div class="empty-state-box"><p>No rooms match this category.</p></div>';
+            return;
+          }
+
+          grid.innerHTML = allRooms.map(r => {
+            const hasBeds = r.available_beds > 0;
+            const isUserRoom = user && user.roomId === r.id;
+            return `
+              <div class="room-card-3d card-3d">
+                <div class="room-header">
+                  <span class="room-number-badge">Room ${r.room_number}</span>
+                  <span class="badge ${hasBeds ? 'badge-success' : 'badge-danger'}">
+                    ${hasBeds ? `${r.available_beds} of ${r.total_beds} beds free` : 'Fully Booked'}
+                  </span>
+                </div>
+                <div class="room-price">
+                  ₹${Number(r.monthly_fee).toLocaleString()} <small>/ month</small>
+                </div>
+                <div class="room-specs">
+                  <div><i class="fa-solid fa-layer-group" style="color: var(--primary-accent);"></i> ${r.room_type}</div>
+                  <div><i class="fa-solid fa-building" style="color: var(--text-muted);"></i> Floor ${r.floor}</div>
+                </div>
+                <div class="room-amenities">
+                  <i class="fa-solid fa-sparkles" style="color: var(--warning); margin-right: 4px;"></i> ${r.amenities || 'High-speed Wi-Fi, Storage, Study Desks'}
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; flex: 1;">
+                  ${r.description || ''}
+                </p>
+                ${isUserRoom ? `
+                  <a href="dashboard.html" class="btn btn-secondary btn-block">
+                    <i class="fa-solid fa-circle-check" style="color: var(--success);"></i> Your Assigned Room
+                  </a>
+                ` : `
+                  <button class="btn btn-primary btn-block book-now-btn" data-id="${r.id}" ${!hasBeds ? 'disabled' : ''}>
+                    ${hasBeds ? '<i class="fa-solid fa-bed"></i> Book Bed' : 'No Beds Available'}
+                  </button>
+                `}
+              </div>
+            `;
+          }).join('');
+
+          document.querySelectorAll('.book-now-btn').forEach(b => {
+            b.addEventListener('click', () => {
+              if (!user) {
+                sessionStorage.setItem('pendingRoomId', b.getAttribute('data-id'));
+                window.location.href = 'login.html';
+                return;
+              }
+              if (user.roomId) {
+                alert('You already have an assigned room. To transfer rooms, please contact administration.');
+                return;
+              }
+              const roomId = Number(b.getAttribute('data-id'));
+              activeRoom = allRooms.find(r => r.id === roomId);
+              if (activeRoom) {
+                document.getElementById('modalRoomTitle').textContent = `Reserve Bed in Room ${activeRoom.room_number}`;
+                document.getElementById('modalRoomTypeDisplay').textContent = activeRoom.room_type;
+                document.getElementById('modalRoomFloorDisplay').textContent = `Floor ${activeRoom.floor}`;
+                document.getElementById('modalRoomFeeDisplay').textContent = `₹${Number(activeRoom.monthly_fee).toLocaleString()} / month`;
+                document.getElementById('modalRoomBedsDisplay').textContent = `${activeRoom.available_beds} beds left`;
+                document.getElementById('roomBookingModal').style.display = 'grid';
+              }
+            });
+          });
+
+        } catch (err) {
+          grid.innerHTML = '<div class="empty-state-box"><p>Failed to load rooms.</p></div>';
+        }
+      }
+
+      document.querySelectorAll('#roomFilterBar .filter-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          document.querySelectorAll('#roomFilterBar .filter-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          fetchRooms(pill.getAttribute('data-filter'));
+        });
+      });
+
+      const confirmBtn = document.getElementById('confirmBookingBtn');
+      if (confirmBtn) {
+        confirmBtn.addEventListener('click', async () => {
+          if (!activeRoom) return;
+          confirmBtn.disabled = true;
+          try {
+            const token = localStorage.getItem('unity_token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+            const res = await fetch('/api/rooms/book', {
+              method: 'POST',
+              headers,
+              credentials: 'include',
+              body: JSON.stringify({ roomId: activeRoom.id })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || 'Room booking could not be completed.');
+            alert(data.message || 'Room booked successfully!');
+            window.location.href = 'dashboard.html';
+          } catch (err) {
+            alert(err.message);
+            confirmBtn.disabled = false;
+          }
+        });
+      }
+
+      document.querySelectorAll('[data-close-modal]').forEach(b => {
+        b.addEventListener('click', () => {
+          document.getElementById(b.getAttribute('data-close-modal')).style.display = 'none';
+        });
+      });
+
+      fetchRooms();
+    })();
+  </script>
+</body>
+</html>

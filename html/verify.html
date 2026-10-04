@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Email OTP | Unity Hostel</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+  <div id="toastContainer"></div>
+
+  <main class="auth-wrapper">
+    <a href="index.html" class="brand auth-brand">
+      <div class="brand-mark">U</div>
+      <span class="brand-text">Unity Hostel</span>
+    </a>
+
+    <div class="auth-card-3d">
+      <div class="auth-header">
+        <span class="eyebrow">Security Verification</span>
+        <h1>Verify Email</h1>
+        <p>Enter the 6-digit code dispatched to <strong id="verifyEmailDisplay" class="text-main">your email</strong>.</p>
+      </div>
+
+      <div id="alertBox" class="alert-box error" style="display: none;">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span id="alertMessage">Verification error</span>
+      </div>
+
+      <div id="devOtpCallout" class="dev-otp-card" style="display: none; margin-bottom: 22px; padding: 18px 20px; background: #eff6ff; border: 1.5px solid #93c5fd; border-radius: var(--radius-lg); text-align: center;">
+        <div style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #1e40af; margin-bottom: 6px;">
+          <i class="fa-solid fa-flask"></i> Development Mode Active
+        </div>
+        <div style="font-size: 0.85rem; color: #1e3a5f; margin-bottom: 8px;">
+          Your 6-Digit Verification Code:
+        </div>
+        <div id="devOtpCodeValue" style="font-family: 'JetBrains Mono', monospace; font-size: 2rem; font-weight: 800; letter-spacing: 6px; color: #1d4ed8; margin-bottom: 12px;">
+          ------
+        </div>
+        <button type="button" id="fillDevOtpLink" class="btn btn-primary btn-sm" style="width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> 1-Click Auto-Fill & Verify
+        </button>
+      </div>
+
+      <form id="verifyForm" novalidate>
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label class="form-label" for="verifyEmailInput">Registered Email Address</label>
+          <input 
+            type="email" 
+            id="verifyEmailInput" 
+            name="email" 
+            class="form-input" 
+            placeholder="resident@example.com" 
+            autocomplete="email" 
+            required
+          >
+        </div>
+
+        <label class="form-label" style="display: block; margin-bottom: 8px;">6-Digit Verification Code</label>
+        <!-- 6 Separate Stylized OTP Boxes -->
+        <div class="otp-container" id="otpBoxContainer">
+          <input type="text" maxlength="1" class="otp-box" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autofocus data-index="0" required>
+          <input type="text" maxlength="1" class="otp-box" inputmode="numeric" pattern="[0-9]*" autocomplete="off" data-index="1" required>
+          <input type="text" maxlength="1" class="otp-box" inputmode="numeric" pattern="[0-9]*" autocomplete="off" data-index="2" required>
+          <input type="text" maxlength="1" class="otp-box" inputmode="numeric" pattern="[0-9]*" autocomplete="off" data-index="3" required>
+          <input type="text" maxlength="1" class="otp-box" inputmode="numeric" pattern="[0-9]*" autocomplete="off" data-index="4" required>
+          <input type="text" maxlength="1" class="otp-box" inputmode="numeric" pattern="[0-9]*" autocomplete="off" data-index="5" required>
+        </div>
+
+        <button type="submit" id="verifyBtn" class="btn btn-primary btn-block btn-lg" style="margin-top: 24px;">
+          <span class="btn-text">Verify & Proceed</span>
+          <span class="spinner" style="display: none;"></span>
+        </button>
+
+        <!-- Resend OTP with Cooldown Timer -->
+        <div class="resend-wrap">
+          <span>Didn't receive the email?</span>
+          <button type="button" id="resendOtpBtn" class="resend-btn">Resend Code</button>
+          <span id="cooldownTimer" class="cooldown-badge" style="display: none;">⏱ 60s</span>
+        </div>
+      </form>
+
+      <div class="auth-footer">
+        Wrong email address? <a href="register.html">Sign up again</a> or <a href="login.html">Sign in</a>
+      </div>
+    </div>
+
+    <a href="index.html" class="back-to-home">
+      <i class="fa-solid fa-arrow-left"></i> Back to Homepage
+    </a>
+  </main>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>

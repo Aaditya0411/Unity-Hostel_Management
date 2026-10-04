@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Resident Account | Unity Hostel</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+  <div id="toastContainer"></div>
+
+  <main class="auth-wrapper">
+    <a href="index.html" class="brand auth-brand">
+      <div class="brand-mark">U</div>
+      <span class="brand-text">Unity Hostel</span>
+    </a>
+
+    <div class="auth-card-3d">
+      <div class="auth-header">
+        <span class="eyebrow">Resident Portal</span>
+        <h1>Create Account</h1>
+        <p>Register to access hostel rooms, fees, and services.</p>
+      </div>
+
+      <div id="alertBox" class="alert-box error" style="display: none;">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span id="alertMessage">Please check your inputs</span>
+      </div>
+
+      <form id="registerForm" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="regName">Full Name</label>
+          <input 
+            type="text" 
+            id="regName" 
+            name="name" 
+            class="form-input" 
+            placeholder="e.g. Priya Sharma" 
+            autocomplete="name" 
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regEmail">Email Address</label>
+          <input 
+            type="email" 
+            id="regEmail" 
+            name="email" 
+            class="form-input" 
+            placeholder="resident@example.com" 
+            autocomplete="email" 
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regPassword">Password</label>
+          <div class="password-wrap">
+            <input 
+              type="password" 
+              id="regPassword" 
+              name="password" 
+              class="form-input" 
+              placeholder="Create a strong password (min 8 chars)" 
+              autocomplete="new-password" 
+              required
+            >
+            <button type="button" class="password-toggle" data-target="regPassword" aria-label="Toggle password visibility">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+          <!-- Live Password Strength Meter -->
+          <div class="strength-bar-wrap">
+            <div class="strength-bar">
+              <div class="strength-segment" id="strSeg1"></div>
+              <div class="strength-segment" id="strSeg2"></div>
+              <div class="strength-segment" id="strSeg3"></div>
+              <div class="strength-segment" id="strSeg4"></div>
+            </div>
+            <div class="strength-label">
+              <span id="strengthText">Password strength: Weak</span>
+              <span id="strengthHint">Must be at least 8 characters</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regConfirmPassword">Confirm Password</label>
+          <div class="password-wrap">
+            <input 
+              type="password" 
+              id="regConfirmPassword" 
+              name="confirmPassword" 
+              class="form-input" 
+              placeholder="Re-enter your password" 
+              autocomplete="new-password" 
+              required
+            >
+            <button type="button" class="password-toggle" data-target="regConfirmPassword" aria-label="Toggle password visibility">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="registerBtn" class="btn btn-primary btn-block btn-lg">
+          <span class="btn-text">Create Account</span>
+          <span class="spinner" style="display: none;"></span>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        Already registered? <a href="login.html">Sign in here</a>
+      </div>
+    </div>
+
+    <a href="index.html" class="back-to-home">
+      <i class="fa-solid fa-arrow-left"></i> Back to Homepage
+    </a>
+  </main>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>
