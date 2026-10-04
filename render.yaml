@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: unity-hostel-management
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 22.13.0
+      - key: NODE_ENV
+        value: production
+      - key: OTP_MINUTES
+        value: 10
+      - key: DATABASE_FILE
+        value: ./database/hostel.sqlite
